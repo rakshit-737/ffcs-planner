@@ -105,6 +105,8 @@ Reusable visual primitives are:
   route chips, apply action, and a preferences panel for heuristic inputs.
 - **Reference/settings surfaces:** source timing and mapping tables, plan
   management, generator defaults, and export controls.
+- **Explore surfaces:** a topic index for planning prompts and an about page
+  that explains the local-first model, trust principles, and intended flow.
 
 ## States and feedback
 

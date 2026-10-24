@@ -14,6 +14,7 @@ A local-first React + TypeScript planner for VIT Chennai's Fully Flexible Credit
 - CSV, JSON, printable browser output (use **Print / PDF → Save as PDF**), and recurring `.ics` calendar export.
 - Slot reference page sourced from `Screenshot 2026-10-23 193410.png`.
 - Responsive dark/light UI with keyboard-visible focus states.
+- Possible topics guide and About section explaining the planner's workflow and trust model.
 - GitHub Actions workflow for GitHub Pages project-site deployment.
 
 ## Development

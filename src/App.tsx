@@ -17,7 +17,9 @@ import {
   FlaskConical,
   GitCompare,
   GraduationCap,
+  Info,
   LayoutDashboard,
+  Lightbulb,
   Menu,
   Moon,
   MoreHorizontal,
@@ -29,6 +31,7 @@ import {
   Save,
   Search,
   Settings,
+  ShieldCheck,
   SlidersHorizontal,
   Sparkles,
   Sun,
@@ -85,7 +88,7 @@ import {
 } from './utils/persistence';
 import './styles.css';
 
-type View = 'dashboard' | 'courses' | 'planner' | 'timetable' | 'compare' | 'reference' | 'settings';
+type View = 'dashboard' | 'courses' | 'planner' | 'timetable' | 'compare' | 'reference' | 'settings' | 'topics' | 'about';
 
 const NAV_ITEMS: { id: View; label: string; icon: typeof LayoutDashboard; hint: string }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, hint: 'Your week at a glance' },
@@ -95,6 +98,8 @@ const NAV_ITEMS: { id: View; label: string; icon: typeof LayoutDashboard; hint: 
   { id: 'compare', label: 'Compare schedules', icon: GitCompare, hint: 'Rank feasible alternatives' },
   { id: 'reference', label: 'Slot reference', icon: Table2, hint: 'Verify the source mapping' },
   { id: 'settings', label: 'Settings', icon: Settings, hint: 'Plans, data, preferences' },
+  { id: 'topics', label: 'Possible topics', icon: Lightbulb, hint: 'Planning ideas to explore' },
+  { id: 'about', label: 'About', icon: Info, hint: 'How this planner works' },
 ];
 
 const DEMO_COURSES: Course[] = [
@@ -295,10 +300,12 @@ function App() {
           {view === 'courses' && <CoursesView courses={activePlan.courses} updateCourses={updateCourses} onLoadDemo={loadDemo} showToast={showToast} />}
           {view === 'planner' && <PlannerView courses={activePlan.courses} updateCourses={updateCourses} conflicts={conflicts} issues={issues} onGenerate={runGenerator} />}
           {view === 'timetable' && <TimetableView courses={activePlan.courses} conflicts={conflicts} onSelectSlot={(courseId, component, slotCode) => { const course = activePlan.courses.find((item) => item.id === courseId); if (!course) return; const normalized = component === 'lab' ? canonicalLabSlot(slotCode) : slotCode; const current = component === 'lab' ? canonicalLabSlot(course.labSlot) : course.theorySlot; const next = component === 'theory' ? { ...course, theorySlot: current === normalized ? undefined : normalized } : { ...course, labSlot: current === normalized ? undefined : normalized }; updateCourses(activePlan.courses.map((item) => item.id === courseId ? next : item)); }} onEdit={() => navigate('planner')} onExport={() => exportIcs(activePlan.courses)} onPrint={() => window.print()} />}
-          {view === 'compare' && <CompareView result={generated} onGenerate={runGenerator} onApply={applySchedule} isGenerating={isGenerating} preferences={activePlan.preferences} updatePreferences={updatePreferences} courses={activePlan.courses} />}
-          {view === 'reference' && <ReferenceView />}
-          {view === 'settings' && <SettingsView plan={activePlan} plans={snapshot.plans} updatePreferences={updatePreferences} onRename={renamePlan} onDuplicate={duplicatePlan} onDelete={deletePlan} onExportJson={() => exportJson(snapshot)} onImport={importJson} onExportCourses={() => exportCoursesCsv(activePlan.courses)} onExportSchedule={() => exportScheduleCsv(activePlan.courses)} onExportIcs={() => exportIcs(activePlan.courses)} onReset={() => { localStorage.removeItem('vit-ffcs-planner:v1'); setGenerated(null); setSnapshot(defaultSnapshot()); showToast('Local data reset.'); }} />}
-        </div>
+           {view === 'compare' && <CompareView result={generated} onGenerate={runGenerator} onApply={applySchedule} isGenerating={isGenerating} preferences={activePlan.preferences} updatePreferences={updatePreferences} courses={activePlan.courses} />}
+           {view === 'reference' && <ReferenceView />}
+           {view === 'settings' && <SettingsView plan={activePlan} plans={snapshot.plans} updatePreferences={updatePreferences} onRename={renamePlan} onDuplicate={duplicatePlan} onDelete={deletePlan} onExportJson={() => exportJson(snapshot)} onImport={importJson} onExportCourses={() => exportCoursesCsv(activePlan.courses)} onExportSchedule={() => exportScheduleCsv(activePlan.courses)} onExportIcs={() => exportIcs(activePlan.courses)} onReset={() => { localStorage.removeItem('vit-ffcs-planner:v1'); setGenerated(null); setSnapshot(defaultSnapshot()); showToast('Local data reset.'); }} />}
+           {view === 'topics' && <TopicsView navigate={navigate} />}
+           {view === 'about' && <AboutView navigate={navigate} />}
+         </div>
       </main>
       {toast && <div className="toast" role="status"><CheckCircle2 size={17} /> {toast}</div>}
     </div>
@@ -327,7 +334,9 @@ function Sidebar({ view, navigate, plan, plans, collapsed, mobileOpen, onCollaps
         <div className="side-label nav-label">WORKSPACE</div>
         {NAV_ITEMS.slice(0, 5).map((item) => <NavItem key={item.id} item={item} active={view === item.id} collapsed={collapsed} onClick={() => navigate(item.id)} />)}
         <div className="side-label nav-label nav-label-spaced">SYSTEM</div>
-        {NAV_ITEMS.slice(5).map((item) => <NavItem key={item.id} item={item} active={view === item.id} collapsed={collapsed} onClick={() => navigate(item.id)} />)}
+        {NAV_ITEMS.slice(5, 7).map((item) => <NavItem key={item.id} item={item} active={view === item.id} collapsed={collapsed} onClick={() => navigate(item.id)} />)}
+        <div className="side-label nav-label nav-label-spaced">EXPLORE</div>
+        {NAV_ITEMS.slice(7).map((item) => <NavItem key={item.id} item={item} active={view === item.id} collapsed={collapsed} onClick={() => navigate(item.id)} />)}
       </nav>
       {!collapsed && <div className="sidebar-footnote"><Sparkles size={17} /><div><strong>Built for the slot maze.</strong><span>Every block follows the reference grid.</span></div></div>}
     </aside>
@@ -571,6 +580,23 @@ function PreferencesPanel({ preferences, updatePreferences }: { preferences: Pre
 
 function ToggleRow({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
   return <label className="toggle-row"><span>{label}</span><button type="button" aria-pressed={checked} className={`toggle ${checked ? 'on' : ''}`} onClick={onChange}><i /></button></label>;
+}
+
+function TopicsView({ navigate }: { navigate: (view: View) => void }) {
+  const topics = [
+    { tag: 'SLOT STRATEGY', title: 'Theory + lab pairings', description: 'Check whether a linked course can fit as one clean route instead of treating its theory and practical parts as separate guesses.', icon: <BookOpen size={18} /> },
+    { tag: 'CLASH CONTROL', title: 'Exact overlap detection', description: 'Use the click map to test a theory against a lab, another theory, or a second lab and see the day and time explained.', icon: <AlertTriangle size={18} /> },
+    { tag: 'LABORATORIES', title: 'Two-period lab sessions', description: 'Keep both halves of a lab together. Clicking either mapped lab cell selects the complete session and protects the break between periods.', icon: <FlaskConical size={18} /> },
+    { tag: 'WEEK SHAPE', title: 'Free days and gaps', description: 'Compare routes by the shape of the week: compact days, later starts, fewer gaps, and more room away from campus.', icon: <CalendarRange size={18} /> },
+    { tag: 'DATA CONFIDENCE', title: 'Verified versus uncertain', description: 'Review the source mapping before relying on it. Unknown or unobserved slots stay visible as warnings instead of becoming silent assumptions.', icon: <CircleHelp size={18} /> },
+    { tag: 'TAKE IT WITH YOU', title: 'Portable registration plan', description: 'Keep a local copy, name different plans, and export the course list or final timetable when you are ready to register.', icon: <Download size={18} /> },
+  ];
+
+  return <div className="topics-view"><PageIntro eyebrow="PLANNER TOPICS" title="Possible topics to explore before registration." description="A focused checklist of the questions that make an FFCS plan trustworthy, explainable, and easier to carry into registration." actions={<button className="button button-primary" onClick={() => navigate('planner')}><SlidersHorizontal size={16} /> Open slot planner</button>} /><section className="topic-intro panel"><div className="topic-intro-mark"><Lightbulb size={21} /></div><div><div className="side-label">A GOOD PLACE TO START</div><h2>Build the list first. Optimize the week second.</h2><p>These topics are not extra homework. They are the checkpoints behind every useful route: what you are taking, where it fits, why it is safe, and what you can export when the plan is ready.</p></div></section><section className="topic-grid" aria-label="Possible planning topics">{topics.map((topic) => <article className="topic-card panel" key={topic.title}><div className="topic-card-top"><span className="topic-icon">{topic.icon}</span><span className="topic-tag">{topic.tag}</span></div><h2>{topic.title}</h2><p>{topic.description}</p></article>)}</section><section className="topic-next panel"><div><div className="side-label">NEXT MOVE</div><h2>Turn one of these topics into a real plan.</h2><p>Start with your courses, then use the timetable map to click through the theory and laboratory choices that matter.</p></div><div className="inline-actions"><button className="button button-secondary" onClick={() => navigate('courses')}><BookOpen size={16} /> My courses</button><button className="button button-primary" onClick={() => navigate('timetable')}><CalendarDays size={16} /> Open timetable</button></div></section></div>;
+}
+
+function AboutView({ navigate }: { navigate: (view: View) => void }) {
+  return <div className="about-view"><PageIntro eyebrow="ABOUT THE PLANNER" title="A calmer way through the FFCS slot maze." description="VIT Chennai FFCS Timetable Planner helps you move from a course list to a timetable you can inspect, compare, and take with you." actions={<button className="button button-primary" onClick={() => navigate('courses')}><Plus size={16} /> Start a plan</button>} /><div className="about-grid"><section className="about-story panel"><div className="panel-heading"><div><h2>What this tool is for</h2><p>Planning support before official registration.</p></div><GraduationCap size={19} className="muted-icon" /></div><div className="about-copy"><p>FFCS choices are easier to trust when the timetable is visible as a route rather than a pile of slot codes. This planner lets you enter intended courses, assign theory and lab components, and see the consequences immediately.</p><p>Its conflict engine respects the difference between theory and laboratory timings, treats labs as two-period sessions, keeps lunch non-schedulable, and explains every detected overlap with a course, day, and time.</p><p className="about-note"><Info size={15} /><span>Use the official VIT registration information as the final authority. This app is a planning aid, and uncertain source mappings stay marked for review.</span></p></div></section><aside className="about-facts panel"><div className="panel-heading"><div><h2>At a glance</h2><p>The promises behind the interface.</p></div><CheckCircle2 size={19} className="muted-icon" /></div><div className="about-fact-list"><div><strong>Local-first</strong><span>Your plans stay in this browser unless you export them.</span></div><div><strong>Monday–Sunday</strong><span>The full week remains visible, including the weekend.</span></div><div><strong>Theory + lab aware</strong><span>Labs remain continuous two-period blocks in every view.</span></div><div><strong>Explainable routes</strong><span>Generated schedules are bounded heuristics, not opaque promises.</span></div></div></aside></div><section className="about-principles panel"><div className="panel-heading"><div><h2>How the planner earns trust</h2><p>Four principles keep the useful parts visible.</p></div><ShieldCheck size={19} className="muted-icon" /></div><div className="principle-grid"><div><CheckCircle2 size={17} /><strong>Correctness first</strong><span>Real time intervals outrank matching labels.</span></div><div><AlertTriangle size={17} /><strong>Explain every clash</strong><span>Conflict messages name both sides and the overlap.</span></div><div><CircleHelp size={17} /><strong>Show uncertainty</strong><span>Unverified mappings remain reviewable.</span></div><div><Download size={17} /><strong>Keep it portable</strong><span>Export a plan, course list, or calendar.</span></div></div></section><section className="about-workflow panel"><div className="panel-heading"><div><h2>The intended flow</h2><p>Move through the workspace in the order that keeps decisions easy to reverse.</p></div><ArrowUpRight size={19} className="muted-icon" /></div><div className="workflow-grid"><div><span>Build</span><strong>Add your course list</strong><p>Keep the subject record honest before choosing slots.</p></div><div><span>Inspect</span><strong>Click through the grid</strong><p>Test theory, lab, and cross-course overlaps directly.</p></div><div><span>Compare</span><strong>Choose a better week</strong><p>Generate bounded alternatives and review the trade-offs.</p></div><div><span>Carry</span><strong>Export the plan</strong><p>Save locally or take the timetable into your calendar.</p></div></div></section><div className="about-actions"><button className="button button-secondary" onClick={() => navigate('topics')}><Lightbulb size={16} /> Explore possible topics</button><button className="button button-primary" onClick={() => navigate('timetable')}><CalendarDays size={16} /> See the timetable</button></div></div>;
 }
 
 function ReferenceView() {
