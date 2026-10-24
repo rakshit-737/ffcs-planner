@@ -216,11 +216,16 @@ code { padding: 2px 4px; border-radius: 4px; color: var(--violet); background: v
 
 .interactive-chart { margin-bottom: 22px; overflow: hidden; }
 .chart-status { display: flex; align-items: center; gap: 8px; color: var(--text-faint); font-size: 11px; white-space: nowrap; }
-.chart-controls { display: flex; align-items: end; justify-content: space-between; gap: 15px; padding: 19px 22px 0; }
+.chart-controls { display: flex; align-items: end; flex-wrap: wrap; justify-content: space-between; gap: 15px; padding: 19px 22px 0; }
 .chart-controls label { display: grid; gap: 7px; color: var(--text-soft); font-size: 11px; font-weight: 650; }
 .chart-controls select { min-width: 260px; border: 1px solid var(--line); border-radius: 9px; padding: 10px 11px; color: var(--text); background: var(--surface-raised); font-size: 12px; outline: 0; }
+.chart-mode { display: grid; gap: 7px; color: var(--text-soft); font-size: 11px; font-weight: 650; }
+.chart-mode .segmented-control { width: max-content; }
+.chart-mode .segmented-control button { padding-inline: 10px; }
 .chart-conflict-count { display: flex; align-items: center; gap: 7px; padding-bottom: 10px; color: var(--text-faint); font-size: 11px; }
 .chart-conflict-count svg { color: var(--red); }
+.chart-guidance { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 15px; padding: 15px 22px 0; color: var(--text-faint); font-size: 10px; }
+.chart-guidance .component-dot, .chart-guidance .legend-pip { margin-right: -3px; }
 .slot-chart-scroll { overflow-x: auto; padding: 19px 22px 22px; }
 .slot-chart { min-width: 1190px; display: grid; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
 .chart-corner, .chart-period, .chart-day-label, .chart-row-label, .slot-cell { min-height: 39px; display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
@@ -233,12 +238,25 @@ code { padding: 2px 4px; border-radius: 4px; color: var(--violet); background: v
 button.slot-cell { cursor: pointer; }
 button.slot-cell.eligible:hover { color: var(--text); background: var(--surface-soft); }
 .slot-cell.locked { color: var(--text-faint); background: rgba(255,255,255,.01); cursor: not-allowed; }
+.slot-cell.manual-option { color: var(--text-soft); }
+.slot-cell.manual-option.selected { border-style: dashed; }
+.slot-cell.manual-option:hover { color: var(--text); background: var(--surface-soft); }
 .slot-cell.selected { color: var(--text); background: var(--violet-soft); box-shadow: inset 0 0 0 2px var(--violet); }
 .slot-cell.lab.selected { background: var(--mint-soft); box-shadow: inset 0 0 0 2px var(--mint); }
 .slot-cell.conflict { color: var(--red); background: var(--red-soft); box-shadow: inset 0 0 0 2px var(--red); }
 .slot-cell.unavailable { color: var(--amber); background: var(--amber-soft); }
 .lab-session-marker { position: absolute; right: 3px; bottom: 2px; color: var(--mint); font-family: inherit; font-size: 7px; }
 .chart-empty { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 145px; color: var(--text-faint); font-size: 12px; }
+.chart-result { margin: 0 22px 22px; padding: 13px 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface-raised); }
+.chart-result.clear { color: var(--mint); }
+.chart-result.has-conflicts { color: var(--red); border-color: rgba(255, 142, 155, 0.3); background: var(--red-soft); }
+.chart-result-heading { display: flex; align-items: flex-start; gap: 9px; }
+.chart-result-heading > svg { flex: 0 0 auto; margin-top: 1px; }
+.chart-result-heading div { display: grid; gap: 3px; }
+.chart-result-heading strong { color: var(--text); font-size: 12px; }
+.chart-result-heading span { color: var(--text-soft); font-size: 10px; line-height: 1.45; }
+.chart-conflict-list { display: grid; gap: 5px; padding: 10px 0 0 26px; margin: 10px 0 0; border-top: 1px solid rgba(255, 142, 155, 0.22); color: var(--red); font-size: 10px; line-height: 1.45; }
+.conflict-dot { background: var(--red); box-shadow: 0 0 0 3px var(--red-soft); }
 
 .empty-state { display: grid; place-items: center; text-align: center; min-height: 280px; padding: 40px 20px; border: 1px dashed var(--line-strong); border-radius: var(--radius); background: var(--surface); }
 .empty-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 15px; color: var(--violet); background: var(--violet-soft); }
@@ -448,6 +466,15 @@ td:first-child { color: var(--text); font-weight: 750; }
   .next-panel h2 { font-size: 18px; }
   .mini-week { padding-inline: 12px; }
   .panel-heading { padding-inline: 17px; }
+  .chart-status { white-space: normal; text-align: right; }
+  .chart-controls { align-items: stretch; padding-inline: 17px; }
+  .chart-controls > label, .chart-mode { width: 100%; }
+  .chart-controls select { width: 100%; min-width: 0; }
+  .chart-mode .segmented-control { width: 100%; }
+  .chart-mode .segmented-control button { flex: 1; }
+  .chart-conflict-count { width: 100%; padding-bottom: 0; }
+  .chart-guidance { padding-inline: 17px; }
+  .chart-result { margin-inline: 17px; }
   .course-row { align-items: flex-start; flex-wrap: wrap; padding: 13px; }
   .course-main { width: calc(100% - 55px); flex: auto; }
   .course-slot-summary { margin-left: 55px; flex-direction: row; }

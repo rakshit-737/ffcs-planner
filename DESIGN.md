@@ -98,7 +98,9 @@ Reusable visual primitives are:
 - **Slot lanes/options:** separate theory and laboratory lanes with selected,
   clash, available, and unverified treatments.
 - **Timetable:** Monday–Sunday grid, period rail, distinct theory/lab blocks,
-  a non-schedulable lunch row, Week/Compact/Day control, and legend.
+  a non-schedulable lunch row, Week/Compact/Day control, and legend. Its click
+  map supports all verified mapped slots or the course's eligible options;
+  clicking either half of a lab selects the complete two-period session.
 - **Route comparison:** ranked schedule cards, score badge, schedule metrics,
   route chips, apply action, and a preferences panel for heuristic inputs.
 - **Reference/settings surfaces:** source timing and mapping tables, plan
@@ -117,6 +119,10 @@ The interface makes the planning state visible at the point of use:
   option says `Available`; a conflict uses red border/background, an alert icon,
   and an explicit clash count/message. An unverified mapping uses dashed,
   softened treatment and a `Verify mapping` warning.
+- The timetable click map keeps theory/lab selections visible while a red
+  result panel explains the exact course, day, and time overlap. A manual slot
+  chosen outside a course's listed options remains visibly dashed instead of
+  being silently treated as eligible.
 - Dashboard signals distinguish `Waiting`, `Clear`, `Reference verified`,
   review-needed, heuristic score, and conflict states with both text and icon.
 - Generated routes identify the first-ranked route as `Recommended`; the

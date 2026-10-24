@@ -6,7 +6,7 @@ A local-first React + TypeScript planner for VIT Chennai's Fully Flexible Credit
 
 - Course manager with theory, lab, and linked Theory + Lab records.
 - Paste-import for course rows and local browser autosave.
-- Interactive slot planner with immediate clash explanations.
+- Clickable slot map: select any mapped theory or two-period lab, then see theory/lab clashes highlighted and explained immediately.
 - Monday–Sunday timetable with a visible lunch break and two-period lab blocks.
 - Bounded backtracking generator that returns multiple clash-free alternatives.
 - Transparent heuristic route scoring for gaps, free days, early/late classes, and weekend classes.

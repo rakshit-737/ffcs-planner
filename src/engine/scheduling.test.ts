@@ -38,6 +38,12 @@ describe('FFCS scheduling engine', () => {
     ])).toHaveLength(1);
   });
 
+  it('flags a theory/lab clash when both components belong to one course', () => {
+    expect(detectConflicts([
+      course({ id: 'linked', code: 'LINKED', type: 'both', theorySlot: 'A1', labSlot: 'L1' }),
+    ])).toHaveLength(1);
+  });
+
   it('keeps a non-overlapping theory slot valid against the selected lab session', () => {
     expect(detectConflicts([
       course({ id: 'theory-s11', code: 'S11COURSE', theorySlot: 'S11' }),
