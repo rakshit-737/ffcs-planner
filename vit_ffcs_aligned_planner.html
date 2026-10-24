@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VIT FFCS Aligned Slot Planner</title>
+<style>
+:root{--bg:#e7f3f3;--ink:#15212a;--muted:#61747b;--line:#17242b;--white:#fff;--theory:#dedcff;--lab:#fff0a7;--selected:#b7f36b;--conflict:#ffb9c2;--accent:#4b3fc7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 system-ui,-apple-system,Segoe UI,sans-serif}.wrap{max-width:1500px;margin:auto;padding:22px}.head{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap;margin-bottom:17px}.kicker{color:#267c7b;text-transform:uppercase;font-weight:850;letter-spacing:.15em;font-size:11px}.title{font-size:clamp(27px,4vw,39px);font-weight:850;letter-spacing:-.04em;margin:3px 0}.sub{color:var(--muted)}.controls{display:grid;grid-template-columns:1fr 1fr auto auto;gap:10px;padding:13px;background:#fff;border:1px solid #c5dada;border-radius:13px;margin-bottom:13px;align-items:end}.field label{display:block;font-size:11px;font-weight:800;color:#5c6d73;margin-bottom:5px;text-transform:uppercase}.field input{width:100%;padding:10px;border:1px solid #b9cccc;border-radius:8px;font:inherit}.btn{border:1px solid #bdcccc;border-radius:9px;padding:10px 13px;background:#f6ffff;font-weight:750;cursor:pointer}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn:hover,.slot:hover{filter:brightness(.97)}.stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.stat{background:#fff;border:1px solid #c5dada;border-radius:9px;padding:8px 11px;font-size:12px}.stat strong{font-size:15px;margin-right:4px}.notice{background:#effbea;border:1px solid #b9dca9;border-radius:9px;padding:10px 12px;font-size:13px;margin-bottom:12px}.notice.warn{background:#fff0f1;border-color:#efb3ba}.board{overflow:auto;background:#fff;border:2px solid var(--line)}.grid{min-width:1200px;display:grid;grid-template-columns:78px repeat(6,minmax(76px,1fr)) 54px repeat(6,minmax(76px,1fr));}.grid .headcell,.day,.slot,.lunch{border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.headcell{padding:8px 3px;text-align:center;font-weight:800;background:#f8ffff;font-size:12px}.day{grid-column:1;display:flex;align-items:center;justify-content:center;font-weight:850;background:#eaf5f5;border-right:2px solid var(--line)}.band{padding:8px;text-align:center;font-weight:850;border-bottom:2px solid var(--line);border-right:1px solid var(--line)}.band.morning{grid-column:2/span 6;background:#e8e5ff}.band.break{grid-column:8;background:#ededf2}.band.evening{grid-column:9/span 6;background:#e8e5ff}.slot{min-height:55px;border-radius:0;padding:6px 2px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;text-align:center;cursor:pointer;font-weight:800;font-size:12px;overflow-wrap:anywhere;position:relative}.slot.theory{background:var(--theory)}.slot.lab{background:var(--lab);min-height:49px}.slot.selected{background:var(--selected);box-shadow:inset 0 0 0 3px #37791b}.slot.conflict{background:var(--conflict)!important;box-shadow:inset 0 0 0 3px #c52c45}.slot small{font-size:9px;font-weight:600;color:#526167}.lunch{grid-column:8;display:flex;align-items:center;justify-content:center;background:#ededf2;font-size:10px;font-weight:850;letter-spacing:.08em;writing-mode:vertical-rl}.rowlabel{grid-column:1;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:850;background:#f1f4fa;border-right:2px solid var(--line);border-bottom:1px solid var(--line)}.legend{display:flex;gap:13px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:11px 0}.dot{display:inline-block;width:10px;height:10px;border:1px solid #849494;margin-right:5px;vertical-align:-1px}.lower{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:13px}.box{background:#fff;border:1px solid #c5dada;border-radius:13px;padding:14px}.box h2{font-size:16px;margin:0 0 9px}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{display:flex;align-items:center;gap:7px;padding:7px 9px;border:1px solid #c8d6d6;border-radius:8px;background:#f6fbfb;font-size:12px}.chip button{border:0;background:none;color:#a3293c;font-weight:900;cursor:pointer}.course-row{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #e1eaea;padding:8px 0;font-size:12px}.empty,.help,.footer{color:var(--muted);font-size:12px}.help{margin-top:9px}.footer{font-size:11px;margin-top:13px}
+@media(max-width:760px){.wrap{padding:11px}.controls{grid-template-columns:1fr 1fr}.lower{grid-template-columns:1fr}}
+@media print{body{background:white}.controls,.stats,.lower,.legend,.footer{display:none!important}.wrap{max-width:none;padding:0}.slot{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+</style>
+</head>
+<body><div class="wrap">
+<header class="head"><div><div class="kicker">VIT Chennai · FFCS</div><div class="title">Aligned Clickable Slot Planner</div><div class="sub">Theory and lab slots now line up column-by-column: A1 above L1, F1 above L2, D1 above L3, and so on.</div></div></header>
+<section class="controls">
+<div class="field"><label for="code">Course code (optional)</label><input id="code" placeholder="e.g. BCSE204L"></div>
+<div class="field"><label for="name">Course name (optional)</label><input id="name" placeholder="e.g. Database Systems"></div>
+<button class="btn primary" id="mode">Mode: Select slots</button><button class="btn" id="clear">Clear all</button>
+</section>
+<div class="stats"><div class="stat"><strong id="n">0</strong> selections</div><div class="stat"><strong id="nt">0</strong> theory slots</div><div class="stat"><strong id="nl">0</strong> lab sessions</div><div class="stat"><strong id="nc">0</strong> clashes</div></div>
+<div class="notice" id="notice">Click any slot to select it. In Assign course mode, enter a course code first. Clicking either half of a lab pair selects the full two-period lab session.</div>
+<div class="board" id="board"></div>
+<div class="legend"><span><i class="dot" style="background:var(--theory)"></i>Theory period</span><span><i class="dot" style="background:var(--lab)"></i>Individual lab period</span><span><i class="dot" style="background:var(--selected)"></i>Selected</span><span><i class="dot" style="background:var(--conflict)"></i>Clash</span></div>
+<div class="lower"><section class="box"><h2>Selected slots</h2><div id="selected" class="chips"><span class="empty">No selections yet.</span></div><p class="help">Lab pairs are grouped automatically. Selecting L1 or L2 selects L1+L2 as one two-period lab session.</p><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:12px"><button class="btn" id="export">Export JSON</button><button class="btn" id="import">Import JSON</button><input id="file" type="file" accept=".json,application/json" hidden><button class="btn" onclick="print()">Print</button></div></section>
+<section class="box"><h2>Course assignments</h2><div id="assignments"><span class="empty">No assigned courses yet.</span></div><p class="help">The red highlights show known theory/lab overlaps from the chart. Verify official course eligibility before registration.</p></section></div>
+<div class="footer">Monday–Friday layout transcribed from your supplied timetable. Lab cells are split visually for alignment; each selectable lab session still occupies two consecutive lab periods.</div>
+</div>
+<script>
+const days=[
+{d:'Mon',t:['A1','F1','D1','TB1','TG1','S11','A2','F2','D2','TB2','TG2','S3'],l:['L1','L2','L3','L4','L5','L6','L31','L32','L33','L34','L35','L36']},
+{d:'Tue',t:['B1','G1','E1','TC1','TAA1','-','B2','G2','E2','TC2','TAA2','-'],l:['L7','L8','L9','L10','L11','L12','L37','L38','L39','L40','L41','L42']},
+{d:'Wed',t:['C1','A1','F1','TD1','TBB1','-','C2','A2','F2','TD2','TBB2','-'],l:['L13','L14','L15','L16','L17','L18','L43','L44','L45','L46','L47','L48']},
+{d:'Thu',t:['D1','B1','G1','TE1','TCC1','-','D2','B2','G2','TE2','TCC2','-'],l:['L19','L20','L21','L22','L23','L24','L49','L50','L51','L52','L53','L54']},
+{d:'Fri',t:['E1','C1','TA1','TF1','TD1','-','E2','C2','TA2','TF2','TDD2','-'],l:['L25','L26','L27','L28','L29','L30','L55','L56','L57','L58','L59','L60']}
+];
+const theoryTimes=['08:00','08:55','09:50','10:45','11:40','12:35','14:00','14:55','15:50','16:45','17:40','18:35'];
+const labTimes=['08:00','08:50','09:50','10:40','11:40','12:30','14:00','14:50','15:50','16:40','17:40','18:30'];
+let mode='select', selected=[];
+try{let x=JSON.parse(localStorage.getItem('vit-ffcs-aligned')||'[]');if(Array.isArray(x))selected=x}catch(e){}
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function labPair(slot){let n=Number(slot.slice(1));return 'L'+(n%2?n:n-1)+'+L'+(n%2?n+1:n)}
+function find(day,type,slot){return selected.find(x=>x.day===day&&x.type===type&&x.slot===slot)}
+function clashes(){
+ let bad=new Set(),count=0;
+ for(const d of days){
+  const ts=selected.filter(x=>x.day===d.d&&x.type==='theory');
+  const ls=selected.filter(x=>x.day===d.d&&x.type==='lab');
+  for(const l of ls)for(const t of ts){
+   const pair=labPair(l.slot);const pairIndex=Number(pair.match(/L(\d+)/)[1]);
+   const idx=d.l.indexOf('L'+pairIndex);
+   // Lab pair spans the two aligned columns corresponding to its L number pair.
+   if(idx>=0&&(t.index===idx||t.index===idx+1)){bad.add(l.key);bad.add(t.key);count++}
+  }
+ }
+ return {bad,count};
+}
+function renderBoard(){
+ let h='<div class="grid"><div class="headcell" style="grid-column:1;grid-row:1">DAY</div>';
+ theoryTimes.forEach((t,i)=>{let col=i<6?i+2:i+3;h+=`<div class="headcell" style="grid-column:${col};grid-row:1">${t}<br><small>${i+1}</small></div>`});
+ h+='<div class="band morning" style="grid-row:2">Morning</div><div class="band break" style="grid-row:2">Lunch</div><div class="band evening" style="grid-row:2">Evening</div>';
+ // grid rows are generated per weekday: theory row and lab row, with cells aligned by period
+ days.forEach((d,di)=>{
+  h+=`<div class="day" style="grid-row:${3+di*2}/span 2">${d.d}</div>`;
+  d.t.forEach((slot,i)=>{
+   const col=i<6?i+2:i+3;
+   h+=slot==='-'?`<div class="slot theory" style="grid-column:${col};grid-row:${3+di*2};opacity:.3;cursor:default">—</div>`:`<div class="slot theory" data-day="${d.d}" data-type="theory" data-slot="${slot}" data-index="${i}" style="grid-column:${col};grid-row:${3+di*2}">${esc(slot)}<small>${theoryTimes[i]}</small></div>`;
+  });
+  h+=`<div class="lunch" style="grid-row:${3+di*2}">LUNCH</div>`;
+  d.l.forEach((slot,i)=>{const col=i<6?i+2:i+3;h+=`<div class="slot lab" data-day="${d.d}" data-type="lab" data-slot="${slot}" data-index="${i}" style="grid-column:${col};grid-row:${4+di*2}">${slot}<small>${labTimes[i]}</small></div>`});
+  h+=`<div class="lunch" style="grid-row:${4+di*2}">LUNCH</div>`;
+  h+=`<div class="rowlabel" style="grid-row:${4+di*2};grid-column:1">LAB</div>`;
+ });
+ h+='</div>'; $('board').innerHTML=h;
+ const {bad}=clashes();
+ $('board').querySelectorAll('[data-slot]').forEach(b=>{
+  const day=b.dataset.day,type=b.dataset.type,slot=b.dataset.slot,index=Number(b.dataset.index);
+  const obj=find(day,type,slot);if(obj)b.classList.add('selected');
+  const k=obj?.key;
+  if(k&&bad.has(k))b.classList.add('conflict');
+  if(obj?.code){b.insertAdjacentHTML('beforeend',`<small>${esc(obj.code)}</small>`)}
+  b.addEventListener('click',()=>{if(slot==='-')return;clickSlot(day,type,slot,index)});
+ });
+}
+function clickSlot(day,type,slot,index){
+ const pair=type==='lab'?labPair(slot):null;
+ const targets=type==='lab'?pair.split('+'): [slot];
+ const found=targets.map(s=>find(day,type,s)).filter(Boolean);
+ if(found.length===targets.length){selected=selected.filter(x=>!targets.includes(x.slot)||x.day!==day||x.type!==type)}
+ else{
+  const code=mode==='assign'?$('code').value.trim().toUpperCase():'';
+  const name=mode==='assign'?$('name').value.trim():'';
+  if(mode==='assign'&&!code){alert('Enter a course code first.');return}
+  targets.forEach(s=>{if(!find(day,type,s))selected.push({key:`${day}|${type}|${s}`,day,type,slot:s,index:type==='lab'?days.find(d=>d.d===day).l.indexOf(s):index,code,name,session:type==='lab'?pair:null})});
+ }
+ saveRender();
+}
+function renderDetails(){
+ const {bad,count}=clashes();
+ $('n').textContent=selected.filter(x=>x.type==='theory'||x.type==='lab'&&Number(x.slot.slice(1))%2===1).length;
+ $('nt').textContent=selected.filter(x=>x.type==='theory').length;
+ $('nl').textContent=selected.filter(x=>x.type==='lab'&&Number(x.slot.slice(1))%2===1).length;
+ $('nc').textContent=count;
+ $('selected').innerHTML=selected.length?selected.filter(x=>x.type==='theory'||Number(x.slot.slice(1))%2===1).map(x=>`<span class="chip"><b>${esc(x.day)} · ${esc(x.type==='lab'?labPair(x.slot):x.slot)}</b>${x.code?esc(x.code):''}<button data-remove="${esc(x.key)}">×</button></span>`).join(''):'<span class="empty">No selections yet.</span>';
+ $('selected').querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click',()=>{let x=selected.find(y=>y.key===b.dataset.remove);if(x&&x.type==='lab'){let pair=labPair(x.slot);selected=selected.filter(y=>!(y.day===x.day&&y.type==='lab'&&pair.split('+').includes(y.slot)))}else selected=selected.filter(y=>y.key!==b.dataset.remove);saveRender()}));
+ const grouped={};selected.filter(x=>x.code&&(x.type==='theory'||Number(x.slot.slice(1))%2===1)).forEach(x=>{let k=x.code+'|'+x.name;(grouped[k]??=[]).push(x)});
+ $('assignments').innerHTML=Object.keys(grouped).length?Object.entries(grouped).map(([k,xs])=>{let [code,name]=k.split('|');return `<div class="course-row"><span><b>${esc(code)}</b>${name?`<br><small>${esc(name)}</small>`:''}</span><span style="text-align:right">${xs.map(x=>esc(x.day+' '+(x.type==='lab'?labPair(x.slot):x.slot))).join('<br>')}</span></div>`}).join(''):'<span class="empty">No assigned courses yet.</span>';
+ const n=$('notice');
+ if(bad.size){n.className='notice warn';n.textContent='Clash detected: selected theory and lab periods overlap. Both sides are highlighted red.'}
+ else{n.className='notice';n.textContent=mode==='select'?'Select slots mode: click a theory period or either lab cell. A lab click selects its two-period pair.':'Assign course mode: enter a course code, then click slots. A lab click selects its full two-period pair.'}
+}
+function saveRender(){localStorage.setItem('vit-ffcs-aligned',JSON.stringify(selected));renderBoard();renderDetails()}
+$('mode').addEventListener('click',()=>{mode=mode==='select'?'assign':'select';$('mode').textContent=mode==='select'?'Mode: Select slots':'Mode: Assign course';renderDetails()});
+$('clear').addEventListener('click',()=>{if(confirm('Clear all selections?')){selected=[];saveRender()}});
+$('export').addEventListener('click',()=>{let b=new Blob([JSON.stringify({app:'VIT FFCS aligned planner',selected},null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='vit-ffcs-plan.json';a.click();URL.revokeObjectURL(a.href)});
+$('import').addEventListener('click',()=>$('file').click());
+$('file').addEventListener('change',async e=>{try{let d=JSON.parse(await e.target.files[0].text());if(!Array.isArray(d.selected))throw Error('Invalid plan');selected=d.selected;saveRender()}catch(err){alert('Could not import: '+err.message)}e.target.value=''});
+renderBoard();renderDetails();
+</script></body></html>
